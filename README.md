@@ -340,12 +340,12 @@ Planned test coverage: JWT creation and validation (tampered, expired, wrong key
 
 - [x] Registration, login, JWT authentication, role-based authorization
 - [x] Wallet, deposit, transfer and ledger endpoints
-- [ ] Money-movement hardening: strict debit rules, ordered locking, validation on all money endpoints
-- [ ] Idempotency-Key support for deposits and transfers
-- [ ] Consistent error format for every error (including security-layer errors)
-- [ ] Concurrency and invariant tests
+- [x] Money-movement hardening: strict debit rules, ordered locking, validation on all money endpoints
+- [x] Idempotency-Key support for deposits and transfers
+- [x] Consistent error format for every error (including security-layer errors)
+- [x] Concurrency and invariant tests
 - [ ] Refresh tokens with rotation and reuse detection
-- [ ] Redis: rate limiting, token revocation, idempotency fast path (Docker Compose)
+- [x] Redis: rate limiting, token revocation, idempotency fast path (Docker Compose)
 - [ ] RabbitMQ: notifications with retry and dead-letter queue
 - [ ] Kafka: transaction events and a fraud-detection consumer
 - [ ] Split fraud and notification services into separate microservices
