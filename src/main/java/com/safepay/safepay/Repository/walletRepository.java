@@ -25,12 +25,12 @@ public interface walletRepository extends JpaRepository<Wallet, UUID> {
     Optional<Wallet> findByIdAndUser(UUID id, User user);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @QueryHints(@QueryHint(name = "jakarta.pessimistic.lock.timeout",value = "3000"))
+    @QueryHints(@QueryHint(name = "jakarta.persistence.lock.timeout",value = "3000"))
     @Query("select w from Wallet w where w.id=:id")
     Optional<Wallet> findByIdForUpdate(@Param("id") UUID id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @QueryHints(@QueryHint(name = "jakarta.pessimistic.lock.timeout",value = "3000"))
+    @QueryHints(@QueryHint(name = "jakarta.persistence.lock.timeout",value = "3000"))
     @Query("select w from Wallet w where w.user.id=:id")
     Optional<Wallet> findByUser_IdForUpdate(@Param("id") UUID id);
 }

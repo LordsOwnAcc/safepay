@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "transfers"
 ,uniqueConstraints = @UniqueConstraint(name = "uk_transfer_user_idem",columnNames = {"initiated_by", "idempotency_key"}))
-@EnableJpaAuditing
+
 @Check(constraints = "amount > 0")
 public class Transfer {
 
@@ -76,65 +76,46 @@ public class Transfer {
         return type;
     }
 
-    public void setType(TransferType type) {
-        this.type = type;
-    }
+
 
     public Wallet getFromWallet() {
         return fromWallet;
     }
 
-    public void setFromWallet(Wallet fromWallet) {
-        this.fromWallet = fromWallet;
-    }
+
 
     public Wallet getToWallet() {
         return toWallet;
     }
 
-    public void setToWallet(Wallet toWallet) {
-        this.toWallet = toWallet;
-    }
+
 
     public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
 
     public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
+
 
     public TransferStatus getStatus() {
         return status;
     }
 
-    public void setStatus(TransferStatus status) {
-        this.status = status;
-    }
 
     public String getNote() {
         return note;
     }
 
-    public void setNote(String note) {
-        this.note = note;
-    }
+
 
     public User getInitiatedBy() {
         return initiatedBy;
     }
 
-    public void setInitiatedBy(User initiatedBy) {
-        this.initiatedBy = initiatedBy;
-    }
 
     public String getIdempotencyKey() {
         return idempotencyKey;

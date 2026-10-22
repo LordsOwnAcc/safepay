@@ -2,10 +2,10 @@ package com.safepay.safepay.Controller;
 
 import com.safepay.safepay.Auth.AuthUser;
 import com.safepay.safepay.Dto.Requests;
-import com.safepay.safepay.Dto.WalletRequest;
 import com.safepay.safepay.Model.LedgerEntry;
 import com.safepay.safepay.Service.transferService;
 import com.safepay.safepay.Service.walletService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ WalletController(walletService ser, transferService transfer){
 }
 
 @PostMapping("/deposit")
-    public ResponseEntity<Requests.DepositResponse> deposit(@AuthenticationPrincipal AuthUser user, @RequestBody Requests.DepositRequest req){
+    public ResponseEntity<Requests.DepositResponse> deposit(@AuthenticationPrincipal AuthUser user,@Valid @RequestBody Requests.DepositRequest req){
  Requests.DepositResponse response= wallet.deposit(user,req);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
             .body(response);
@@ -49,13 +48,13 @@ WalletController(walletService ser, transferService transfer){
 @GetMapping("/myWallet")
     public ResponseEntity<Requests.WalletResponse> getWallet(@AuthenticationPrincipal AuthUser user){
     Requests.WalletResponse re=wallet.getMyWallet(user.getId());
-    return ResponseEntity.status(HttpStatus.FOUND)
-            .body(re);
+    return ResponseEntity.ok(re);
+
 }
 
 @GetMapping("/transaction")
-    public ResponseEntity<List<LedgerEntry>> getTransaction(@AuthenticationPrincipal AuthUser user){
-    List<LedgerEntry> entru = wallet.transaction(user.getId());
+    public ResponseEntity<List<Requests.LedgerEntryResponse>> getTransaction(@AuthenticationPrincipal AuthUser user){
+    List<Requests.LedgerEntryResponse> entru = wallet.transaction(user.getId());
     return ResponseEntity.ok(entru);
 }
 

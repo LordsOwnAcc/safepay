@@ -45,10 +45,22 @@ public class LedgerService {
       );
     }
 
-    public List<LedgerEntry> getLedger(UUID  walletId){
-
-       List<LedgerEntry> ledgerEntries= ledgerEntryRepository.findByWalletId(walletId, Pageable.ofSize(10)).stream().toList();
-       return ledgerEntries;
+    public List<Requests.LedgerEntryResponse> getLedger(UUID  walletId){
+//UUID id, EntryType type, BigDecimal amount, BigDecimal balanceAfter,
+//                                      UUID transferId, Instant createdAt
+       List<LedgerEntry> ledgerEntries= ledgerEntryRepository.findByWalletId(walletId,Pageable.ofSize(10)).stream().toList();
+        return ledgerEntryRepository
+                .findByWalletId(walletId, Pageable.ofSize(10))
+                .stream()
+                .map(entry -> new Requests.LedgerEntryResponse(
+                        entry.getId(),
+                        entry.getType(),
+                        entry.getAmount(),
+                        entry.getBalanceAfter(),
+                        entry.getTransfer().getId(),
+                        entry.getCreatedAt()
+                ))
+                .toList();
     }
 
 }

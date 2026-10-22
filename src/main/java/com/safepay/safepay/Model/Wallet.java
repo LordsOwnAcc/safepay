@@ -1,6 +1,7 @@
 package com.safepay.safepay.Model;
 
 
+import com.safepay.safepay.Exception.InsufficientBalanceException;
 import jakarta.persistence.*;
 import jakarta.validation.Constraint;
 import lombok.Getter;
@@ -15,9 +16,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@EnableJpaAuditing
 @Getter
-@Setter
 @Table(name = "wallets" )
 @Check(constraints = "balance >= 0")
 public class Wallet {
@@ -39,7 +38,7 @@ public class Wallet {
     @Column(name = "currency",nullable = false)
     private String currency;
 
-    @Column(name = "balance",nullable = false)
+    @Column(name = "balance",nullable = false,precision = 19,scale = 2)
     private BigDecimal balance=BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
@@ -77,22 +76,16 @@ public Wallet(User user,BigDecimal  balance,String currency , Status status){
         this.currency=currency;
 }
 
-public void  debit(BigDecimal amount){
-        if (this.status==Status.ACTIVE  && amount.compareTo(BigDecimal.ZERO) > 0 && amount.compareTo(balance)<0){
-           balance= balance.subtract(amount);
-        }
-}
+    public void debit(BigDecimal amount) {
+        if (this.status==Status.ACTIVE && amount.compareTo(BigDecimal.ZERO)>0 && amount.compareTo(balance) < 0) { balance = balance.subtract(amount); }
+        if (balance.compareTo(amount) < 0) throw new InsufficientBalanceException();
+        balance = balance.subtract(amount);
+    }
     public void credit(BigDecimal amount) {
-        if (this.status == Status.ACTIVE
-                && amount != null
-                && amount.compareTo(BigDecimal.ZERO) > 0) {
-
-            this.balance = this.balance.add(amount);
-        } else {
-            throw new IllegalArgumentException(
-                    "Wallet must be active and amount must be positive"
-            );
+        if (this.status==Status.ACTIVE && amount.compareTo(BigDecimal.ZERO)>0 ) {
+            balance = balance.add(amount);
         }
+
     }
 
 

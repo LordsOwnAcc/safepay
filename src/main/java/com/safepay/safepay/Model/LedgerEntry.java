@@ -44,7 +44,7 @@ public class LedgerEntry {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    // Required by JPA
+
     protected LedgerEntry() {
     }
 
@@ -55,7 +55,6 @@ public class LedgerEntry {
         }
     }
 
-    // Getters and setters
 
     public UUID getId() {
         return id;
@@ -73,33 +72,24 @@ public class LedgerEntry {
         return transfer;
     }
 
-    public void setTransfer(Transfer transfer) {
-        this.transfer = transfer;
-    }
 
     public EntryType getType() {
         return type;
     }
 
-    public void setType(EntryType type) {
-        this.type = type;
-    }
+
 
     public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+
 
     public BigDecimal getBalanceAfter() {
         return balanceAfter;
     }
 
-    public void setBalanceAfter(BigDecimal balanceAfter) {
-        this.balanceAfter = balanceAfter;
-    }
+
 
     public Instant getCreatedAt() {
         return createdAt;

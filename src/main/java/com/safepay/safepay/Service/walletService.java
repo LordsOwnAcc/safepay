@@ -2,7 +2,6 @@ package com.safepay.safepay.Service;
 
 import com.safepay.safepay.Auth.AuthUser;
 import com.safepay.safepay.Dto.Requests;
-import com.safepay.safepay.Dto.WalletRequest;
 import com.safepay.safepay.Exception.UserNotFound;
 import com.safepay.safepay.Exception.WalletAlreadyExists;
 import com.safepay.safepay.Exception.WalletNotFoundException;
@@ -10,13 +9,10 @@ import com.safepay.safepay.Model.LedgerEntry;
 import com.safepay.safepay.Model.Status;
 import com.safepay.safepay.Model.User;
 import com.safepay.safepay.Model.Wallet;
-import com.safepay.safepay.Repository.LedgerEntryRepository;
-import com.safepay.safepay.Repository.TransferRepository;
 import com.safepay.safepay.Repository.UserRepository;
 import com.safepay.safepay.Repository.walletRepository;
-import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,6 +28,7 @@ public class walletService {
     private final walletRepository repo;
     private  final LedgerService ledgerService;
 
+
     walletService(walletRepository repo, UserRepository  userRepo, transferService transferService, LedgerService ledgerService){
         this.userRepo=userRepo;
         this.repo=repo;
@@ -40,9 +37,10 @@ public class walletService {
     }
 
     @Transactional()
+    @Cacheable(cacheNames = "wallets",key = "#userId")
     public Requests.WalletResponse  getMyWallet(UUID userId){
 
-
+        System.out.println("Fetching wallet from database");
             if (!repo.existsByUser_Id (userId)) throw  new WalletNotFoundException();
 
             Wallet wal = repo.findByUser_Id(userId).orElseThrow(
@@ -88,7 +86,7 @@ public class walletService {
 
     }
     @Transactional
-    public List<LedgerEntry> transaction(UUID userID){
+    public List<Requests.LedgerEntryResponse> transaction(UUID userID){
        Wallet wallet= repo.findByUser_Id(userID).orElseThrow(
                WalletNotFoundException::new
        );

@@ -11,9 +11,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity()
-@Getter
-@Setter
-@EnableJpaAuditing
+
 @Table(name = "users")
 public class User {
 
@@ -28,14 +26,7 @@ public class User {
     @Column(name = "full_name",nullable = false)
     private String name;
 
-    @OneToOne(
-            mappedBy = "user"
-            ,cascade = CascadeType.ALL
-            ,
-            orphanRemoval = true
-            ,optional = true
-    )
-    private Wallet wallet;
+
 
 
     @Column(name = "password_hash",nullable = false,length = 100)
@@ -52,7 +43,19 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-@PrePersist
+    public UUID getId() {
+        return id;
+    }
+    public String getName(){
+        return this.name;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    @PrePersist
 void onCreate(){
     this.createdAt = Instant.now();
 }
@@ -64,9 +67,19 @@ void onCreate(){
     this.name=name;
     this.email=email;
     this.passwordHash=password;
-    onCreate();
+
     }
 
 
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 
+    public Role getRole() {
+    return this.role;
+    }
+
+    public boolean isEnabled() {
+    return this.enabled;
+    }
 }

@@ -3,6 +3,8 @@ package com.safepay.safepay.Service;
 import com.safepay.safepay.Auth.AuthUser;
 import com.safepay.safepay.Dto.RegisterRequest;
 import com.safepay.safepay.Dto.Requests;
+import com.safepay.safepay.Exception.InsufficientBalanceException;
+import com.safepay.safepay.Exception.SenderRecieverWalletSameException;
 import com.safepay.safepay.Exception.WalletNotFoundException;
 import com.safepay.safepay.Model.*;
 import com.safepay.safepay.Repository.TransferRepository;
@@ -49,14 +51,16 @@ public class transferService {
             UUID  userID,
             Requests.TransferRequest request
     ) {
-        Wallet toWallet = repo.findByIdForUpdate(request.toWalletId())
-                .orElseThrow(WalletNotFoundException::new);
+
         Wallet fromWallet = repo.findByUser_IdForUpdate(userID).orElseThrow(
                 WalletNotFoundException::new
         );
+        Wallet toWallet = repo.findByIdForUpdate(request.toWalletId())
+                .orElseThrow(WalletNotFoundException::new);
 
-        toWallet.credit(request.amount());
+        if (fromWallet.equals(toWallet)) throw new SenderRecieverWalletSameException();
         fromWallet.debit(request.amount());
+        toWallet.credit(request.amount());
 
 
         Transfer transfer = new Transfer(
@@ -91,12 +95,10 @@ public class transferService {
 
         BigDecimal amount = request.amount();
 
-        // Validate the amount before modifying the wallet.
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Deposit amount must be greater than zero");
         }
 
-        // Update the wallet balance exactly once.
         toWallet.credit(amount);
 
         Transfer transfer = new Transfer(
